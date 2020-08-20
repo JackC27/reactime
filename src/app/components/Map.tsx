@@ -55,7 +55,6 @@ const Map = (props) => {
       children: snapshot.children,
     };
 
-    // console.log('STATE', appState);
     // creating the tree map
     const treeMap: any = d3.tree().nodeSize([width, height]);
 
@@ -63,17 +62,12 @@ const Map = (props) => {
     // pass
     const hierarchyNodes: any = d3.hierarchy(appState);
 
-    // console.log('Hierarchy NODES', hierarchyNodes);
-
     // calling the tree function with nodes created from data
     const finalMap: any = treeMap(hierarchyNodes);
-
-    // console.log('FINAL MAP', finalMap);
 
     // renders a flat array of objects containing all parent-child links
     // renders the paths onto the component
     let paths: any = finalMap.links();
-    // console.log('PATHS', paths);
 
     // this creates the paths to each atom and its contents in the tree
     g.append('g')
@@ -191,7 +185,8 @@ const Map = (props) => {
     }
 
     // helper function that allows for zooming
-    function zoomed(): any {
+    function zoomed(){
+      console.log( "d3.event.transform ", d3.event.transform);
       g.attr('transform', d3.event.transform);
     }
   });

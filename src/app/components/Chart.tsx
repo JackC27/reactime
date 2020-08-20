@@ -87,12 +87,14 @@ class Chart extends Component {
     const width = 600; // - margin.right - margin.left;
     const height = 600; // 700 - margin.top - margin.bottom;
     const chartContainer = d3.select(this.chartRef.current)
+      .attr("className", "history-chart-container")
       .append('svg') // chartContainer is now pointing to svg
       .attr('width', width)
       .attr('height', height);
 
     const g = chartContainer.append('g')
       // this is changing where the graph is located physically
+      .attr("className", "nodes-container")
       .attr('transform', `translate(${width / 2 + 4}, ${height / 2 + 2})`);
 
     // if we consider the container for our radial node graph as a box encapsulating
@@ -219,10 +221,11 @@ class Chart extends Component {
       .on('drag', dragged)
       .on('end', dragended));
 
-    chartContainer.call(d3.zoom()
-      .extent([[0, 0], [width, height]])
-      .scaleExtent([0, 8]) // scaleExtent([minimum scale factor, maximum scale factor])
-      .on('zoom', zoomed));
+    chartContainer.call(
+      d3.zoom()
+        .extent([[0, 0], [width, height]])
+        .scaleExtent([0, 8]) // scaleExtent([minimum scale factor, maximum scale factor])
+        .on('zoom', zoomed));
 
     function dragstarted() {
       d3.select(this).raise();
@@ -237,8 +240,37 @@ class Chart extends Component {
       g.attr('cursor', 'grab');
     }
 
+    /** zoom handler */
     function zoomed() {
-      g.attr('transform', d3.event.transform);
+      /* let {k, x, y} = d3.event.transform;
+      console.log("zoomed -> x, y, k", x, y, k);
+      console.log(width, height);
+      //console.log("D3 KEYS", Object.keys(d3) );
+      let trans = d3.event.transform;
+      console.log("zoomed -> trans", trans) */
+    
+      /* let xScale = d3.scaleLinear()
+        .domain([0, height])
+        .range([0, width]);
+      
+      let xAxis = d3.axisBottom(xScale)                
+    
+      let transform = d3.event.transform;
+      transform.x = Math.abs(Math.min(100, transform.x) );
+      transform.y = Math.abs(Math.min(100, transform.y) );
+
+      g.attr("transform", transform.toString());
+
+      let xScaleNew = transform.rescaleX(xScale);
+
+      xAxis.scale(xScaleNew);
+
+ */
+    //translate(${0}, ${0}) 
+    let {k, x, y} = d3.event.transform;
+    console.log("zoomed -> k, x, y", k, x, y)
+    
+     g.attr('transform', `scale(${k})`);
     }
 
     // define the div for the tooltip
@@ -253,8 +285,8 @@ class Chart extends Component {
 
   render() {
     return (
-      <div className="history-d3-container">
-        <div ref={this.chartRef} className="history-d3-div" />
+      <div class="history-d3-container">
+        <div ref={this.chartRef} class="history-d3-div" />
       </div>
     );
   }
