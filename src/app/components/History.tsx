@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 
 /**
@@ -51,10 +51,12 @@ interface HistoryProps {
    */
   function History(props) {
 
-    let { hierarchy } = props;    
-    let root = JSON.parse(JSON.stringify(hierarchy));
-    useEffect( () => { maked3Tree() }, [root] );            
-    let HistoryRef = React.createRef();
+    let { hierarchy } = props;        
+    let [root, setRoot] = useState(JSON.parse(JSON.stringify(hierarchy) ) );
+
+    let HistoryRef = root; //React.createRef(root);    
+
+    useEffect( () => { maked3Tree() }, [root]);
     let isRecoil = false;
 
   let removed3Tree = function() {
@@ -62,7 +64,7 @@ interface HistoryProps {
     while (current.hasChildNodes()) {
       current.removeChild(current.lastChild);
     }
-  } 
+  }
 
   /**
    * @method maked3Tree Creates a new Tree History
