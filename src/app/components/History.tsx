@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import * as d3 from 'd3';
 
 /**
@@ -34,50 +34,46 @@ interface HistoryProps {
   hierarchy: Record<string, unknown>;
 }
 
-let root = {};
-class History extends Component {
+
+// class History extends Component {
   /**
    * @method maked3Tree :Creates a new D3 Tree
    */
+  /*
   constructor(props: HistoryProps) {
     super(props);
     // what React.createRef() is doing.
-    this.HistoryRef = React.createRef();
-    this.maked3Tree = this.maked3Tree.bind(this);
-    this.removed3Tree = this.removed3Tree.bind(this);
-    this.isRecoil = false;
+    HistoryRef = React.createRef();
+    maked3Tree = maked3Tree.bind(this);
+    removed3Tree = removed3Tree.bind(this);
+    isRecoil = false;
   }
+   */
+  function History(props) {
 
-  componentDidMount() {
-    const { hierarchy } = this.props;
-    root = JSON.parse(JSON.stringify(hierarchy));
-    this.maked3Tree();
-  }
+    let { hierarchy } = props;    
+    let root = JSON.parse(JSON.stringify(hierarchy));
+    useEffect( () => { maked3Tree() }, [root] );            
+    let HistoryRef = React.createRef();
+    let isRecoil = false;
 
-  componentDidUpdate() {
-    const { hierarchy } = this.props;
-    root = JSON.parse(JSON.stringify(hierarchy));
-    this.maked3Tree();
-  }
-
-  removed3Tree() {
-    const { current } = this.HistoryRef;
+  let removed3Tree = function() {
+    const { current } = HistoryRef;
     while (current.hasChildNodes()) {
       current.removeChild(current.lastChild);
     }
-  }
+  } 
 
   /**
    * @method maked3Tree Creates a new Tree History
    * @var
    */
-  maked3Tree(): void {
-    this.removed3Tree();
-    console.log("HIEARARCHY", this.props.hierarchy)
+  let maked3Tree = function(){
+    //removed3Tree();    
     const width : number = 800;
     const height : number = 600;
     const svgContainer = d3
-      .select(this.HistoryRef.current)
+      .select(HistoryRef.current)
       .append('svg') // svgContainer is now pointing to svg
       .attr('width', width)
       .attr('height', height);
@@ -159,9 +155,9 @@ class History extends Component {
 
         if (d.data.stateSnapshot.children[0].name === 'RecoilRoot') {
           console.log('enter');
-          this.isRecoil = true;
+          isRecoil = true;
         }
-        console.log('isRecoil', this.isRecoil);
+        console.log('isRecoil', isRecoil);
 
         console.log('d.data', d.data);
         console.log('d.data.stateSnapshot', d.data.stateSnapshot);
@@ -169,7 +165,7 @@ class History extends Component {
           'd.data.stateSnapshot.children',
           d.data.stateSnapshot.children
         );
-        if (!this.isRecoil) {
+        if (!isRecoil) {
           tooltipDiv
             .html(filterHooks(d.data.stateSnapshot.children), this)
             .style('left', d3.event.pageX - 90 + 'px')
@@ -275,13 +271,13 @@ class History extends Component {
     }
   }
 
-  render() {
-    return (
-      <div className="history-d3-container">
-        <div ref={this.HistoryRef} className="history-d3-div" />
-      </div>
-    );
-  }
+  
+  return (
+    <div className="history-d3-container">
+      <div ref={HistoryRef} className="history-d3-div" />
+    </div>
+  );
+
 }
 
 export default History;
