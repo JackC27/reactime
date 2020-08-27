@@ -51,6 +51,7 @@ const Map = (props) => {
     // renders the paths onto the component
     let paths: any = finalMap.links();
 
+    
     // this creates the paths to each node and its contents in the tree
     g.append('g')
       .attr('fill', 'none')
@@ -91,17 +92,17 @@ const Map = (props) => {
 
     // for each node that got created, append a text element that displays the name of the node
     node
-      .append('text')
-      .attr('dy', '.31em')
-      .attr('x', (d: any) => (d.children ? -50 : 50))
-      .attr('text-anchor', (d: any) => (d.children ? 'end' : 'start'))
+      .append("text")
+      .attr("dy", ".31em")
+      .attr("x", (d: any) => (d.children ? -50 : 50))
+      .attr("text-anchor", (d: any) => (d.children ? "end" : "start"))
       .text((d: any) => d.data.name)
-      .style('font-size', `2rem`)
-      .style('fill', 'white')
+      .attr("font-size", (d: any) => {`translate(${d.y}, ${d.x}) scale(${d.k})`;  console.log(" D: ", d); } )
+      .style("fill", "white")
       .clone(true)
       .lower()
-      .attr('stroke', '#646464')
-      .attr('stroke-width', 2);
+      .attr("stroke", "#646464")
+      .attr("stroke-width", 2);
 
     // display the data in the node on hover
     node.on('mouseover', function (d: any, i: number): any {
@@ -150,6 +151,7 @@ const Map = (props) => {
     );
     // helper function that allows for zooming
     function zoomed(d: any) {
+      
       g.attr('transform', d3.event.transform);
     }
 
@@ -160,7 +162,9 @@ const Map = (props) => {
     }
 
     function dragged(d: any): any {
+      (d: any) => { console.log(`${d.y}, ${d.x}, ${d.k}` )}
       d3.select(this)
+      
         .attr('dx', (d.x = d3.event.x))
         .attr('dy', (d.y = d3.event.y));
     }

@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 
+import mouseEffects from "./ChartHelpers/mouseEffects.js";
+import stylingEffects from "./ChartHelpers/styling.js";
+import filterHooks from "./ChartHelpers/utils/utilFn.js";
+
+
 /**
  * @var colors: Colors array for the diffrerent node branches, each color is for a different branch
  */
-const colors = [
+/* const colors = [
   '#95B6B7',
   '#475485',
   '#519331',
@@ -21,14 +26,8 @@ const colors = [
   '#AA6C39',
   '#226666',
   '#2C4870',
-];
+]; */
 
-const filterHooks = (data: any[]) => {
-  if (data[0].children && data[0].state === 'stateless') {
-    return filterHooks(data[0].children);
-  }
-  return JSON.stringify(data[0].state);
-};
 
 interface ChartProps {
   hierarchy: Record<string, unknown>;
@@ -132,25 +131,7 @@ class Chart extends Component {
       .data(d3root.descendants())
       .enter()
       .append('g')
-      .style('fill', function (d) {
-        let loadTime =
-          d.data.stateSnapshot.children[0].componentData.actualDuration;
-
-        if (loadTime !== undefined) {
-          if (loadTime > 16) {
-            return '#ff0000';
-          }
-        }
-
-        if (d.data.branch < colors.length) {
-          return colors[d.data.branch];
-        }
-        let indexColors = d.data.branch - colors.length;
-        while (indexColors > colors.length) {
-          indexColors -= colors.length;
-        }
-        return colors[indexColors];
-      })
+      .style('fill', stylingEffects.stylingOne)
       .attr('class', 'node--internal')
       .attr('transform', function (d: { x: number; y: number }) {
         return 'translate(' + reinfeldTidierAlgo(d.x, d.y) + ')';
@@ -159,49 +140,10 @@ class Chart extends Component {
     node
       .append('circle')
       .attr('r', 15)
-      .on('mouseover', function (d: any) {
-        d3.select(this).transition(100).duration(20).attr('r', 25);
-
-        tooltipDiv.transition().duration(50).style('opacity', 0.9);
-
-        if (d.data.stateSnapshot.children[0].name === 'RecoilRoot') {
-          console.log('enter');
-          this.isRecoil = true;
-        }
-        console.log('isRecoil', this.isRecoil);
-
-        console.log('d.data', d.data);
-        console.log('d.data.stateSnapshot', d.data.stateSnapshot);
-        console.log(
-          'd.data.stateSnapshot.children',
-          d.data.stateSnapshot.children
-        );
-        if (!this.isRecoil) {
-          tooltipDiv
-            .html(filterHooks(d.data.stateSnapshot.children), this)
-            .style('left', d3.event.pageX - 90 + 'px')
-            .style('top', d3.event.pageY - 65 + 'px');
-        } else {
-          tooltipDiv
-            .html(
-              'Load Time : ' +
-                JSON.stringify(
-                  d.data.stateSnapshot.children[0].componentData.actualDuration
-                ).substring(0, 5) +
-                ' ms',
-              this
-            )
-            .style('left', d3.event.pageX - 90 + 'px')
-            .style('top', d3.event.pageY - 65 + 'px');
-        }
-      })
+      .on('mouseover', mouseEffects.expandToolTip)
       // eslint-disable-next-line no-unused-vars
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .on('mouseout', function (d: any) {
-        d3.select(this).transition().duration(300).attr('r', 15);
-
-        tooltipDiv.transition().duration(400).style('opacity', 0);
-      });
+      .on('mouseout', mouseEffects.transitionOut);
     node
       .append('text')
       // adjusts the y coordinates for the node text

@@ -23,15 +23,17 @@ const Tree = (props:TreeProps) => {
   return (
     <>
       {snapshot && (
-        <JSONTree
-          data={snapshot}
-          theme={{ tree: () => ({ className: 'json-tree' }) }}
-          shouldExpandNode={() => true}
-          getItemString={getItemString}
-          labelRenderer={(raw:any[]) => {
-            return (typeof raw[0] !== 'number' ? <span>{raw[0]}</span> : null);
-          }}
-        />
+        <div className="tree-container">
+          <JSONTree
+            data={snapshot}
+            theme={{ tree: () => ({ className: "json-tree" }) }}
+            shouldExpandNode={() => true}
+            getItemString={getItemString}
+            labelRenderer={(raw: any[]) => {
+              return typeof raw[0] !== "number" ? <span>{raw[0]}</span> : null;
+            }}
+          />
+        </div>
       )}
     </>
   );
