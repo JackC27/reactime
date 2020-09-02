@@ -1,6 +1,11 @@
 /* eslint-disable react/require-default-props */
+<<<<<<< HEAD
+/* eslint-disable react/no-unused-prop-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+=======
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/no-unused-prop-types */
+>>>>>>> f3bccc55dda838763bff1bef0a510e5470cbe693
 import React from 'react';
 import { changeView, changeSlider } from '../actions/actions';
 

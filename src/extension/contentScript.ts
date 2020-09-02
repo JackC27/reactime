@@ -3,7 +3,9 @@
 
 let firstMessage = true;
 
-// listening for window messages
+/**
+ * listening for window messages
+ **/
 window.addEventListener('message', msg => { // runs automatically every second
   // window listener picks up the message it sends, so we should filter
   // messages sent by contentscrip
@@ -21,7 +23,9 @@ window.addEventListener('message', msg => { // runs automatically every second
   }
 });
 
-// listening for messages from the UI
+/**
+ * listening for messages from the UI
+ **/
 chrome.runtime.onMessage.addListener(request => { // seems to never fire
   // send the message to npm package
   const { action }: { action: string } = request;
